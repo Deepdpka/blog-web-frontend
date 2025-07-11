@@ -9,7 +9,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyD9djnWRTKBYdbNzDxsUlBtapAe7z3p8pQ",
   authDomain: "blog-website-88a4d.firebaseapp.com",
   projectId: "blog-website-88a4d",
-  storageBucket: "blog-website-88a4d.firebasestorage.app",
+  storageBucket: "blog-website-88a4d.appspot.com",
   messagingSenderId: "555469110716",
   appId: "1:555469110716:web:1bd41ef6712ab87ac6bfb9"
 };
@@ -18,16 +18,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const provider = new GoogleAuthProvider();
 
-const auth = getAuth();
+const auth = getAuth(app);
 
 export const authWithGoogle = async () => {
-    let user = null;
-    await signInWithPopup(auth, provider).then((result)=> {
-        user = result.user
-    })
-    .catch((err)=>{
-        console.log(err)
-    })
-
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    console.log("Logged in:", user);
     return user;
-}
+  } catch (error) {
+    console.error("Google login failed:", error.message);
+    alert("Google login failed: " + error.message);
+    return null;
+  }
+};
